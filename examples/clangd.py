@@ -1,7 +1,11 @@
-import pylspclient
 import subprocess
 import threading
 import argparse
+import os
+import sys
+
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+import pylspclient
 
 class ReadPipe(threading.Thread):
     def __init__(self, pipe):
@@ -16,7 +20,7 @@ class ReadPipe(threading.Thread):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='pylspclient example with clangd')
-    parser.add_argument('clangd_path', type=str, default="/usr/bin/clangd-6.0", 
+    parser.add_argument('clangd_path', type=str, default="c:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Enterprise\\VC\\Tools\\Llvm\\bin\\clangd",
                     help='the clangd path', nargs="?")
     args = parser.parse_args()
     p = subprocess.Popen([args.clangd_path], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -139,15 +143,15 @@ if __name__ == "__main__":
         25,
         26]}},'workspaceEdit': {'documentChanges': True},
     'workspaceFolders': True}}
-    root_uri = 'file:///home/osboxes/projects/ctest/'
+    root_uri = 'file:///C:/Dev/azure-devops/msradt/JessicasRoom/CMakeProject/CMakeProject'
     workspace_folders = [{'name': 'python-lsp', 'uri': root_uri}]
     print(lsp_client.initialize(p.pid, None, root_uri, None, capabilities, "off", workspace_folders))
     print(lsp_client.initialized())
 
-    file_path = "/home/osboxes/projects/ctest/test.c"
+    file_path = "C:/Dev/azure-devops/msradt/JessicasRoom/CMakeProject/CMakeProject/CMakeProject.cpp"
     uri = "file://" + file_path
     text = open(file_path, "r").read()
-    languageId = pylspclient.lsp_structs.LANGUAGE_IDENTIFIER.C
+    languageId = pylspclient.lsp_structs.LANGUAGE_IDENTIFIER.CPP
     version = 1
     lsp_client.didOpen(pylspclient.lsp_structs.TextDocumentItem(uri, languageId, version, text))
     try:
@@ -158,9 +162,9 @@ if __name__ == "__main__":
         # documentSymbol is supported from version 8.
         print("Failed to document symbols")
 
-    lsp_client.definition(pylspclient.lsp_structs.TextDocumentIdentifier(uri), pylspclient.lsp_structs.Position(14, 4))
-    lsp_client.signatureHelp(pylspclient.lsp_structs.TextDocumentIdentifier(uri), pylspclient.lsp_structs.Position(14, 4))
-    lsp_client.definition(pylspclient.lsp_structs.TextDocumentIdentifier(uri), pylspclient.lsp_structs.Position(14, 4))
-    lsp_client.completion(pylspclient.lsp_structs.TextDocumentIdentifier(uri), pylspclient.lsp_structs.Position(14, 4), pylspclient.lsp_structs.CompletionContext(pylspclient.lsp_structs.CompletionTriggerKind.Invoked))
+    result = lsp_client.definition(pylspclient.lsp_structs.TextDocumentIdentifier(uri), pylspclient.lsp_structs.Position(16, 13))
+    #lsp_client.signatureHelp(pylspclient.lsp_structs.TextDocumentIdentifier(uri), pylspclient.lsp_structs.Position(14, 4))
+    #lsp_client.definition(pylspclient.lsp_structs.TextDocumentIdentifier(uri), pylspclient.lsp_structs.Position(14, 4))
+    #lsp_client.completion(pylspclient.lsp_structs.TextDocumentIdentifier(uri), pylspclient.lsp_structs.Position(14, 4), pylspclient.lsp_structs.CompletionContext(pylspclient.lsp_structs.CompletionTriggerKind.Invoked))
     lsp_client.shutdown()
     lsp_client.exit()
