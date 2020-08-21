@@ -23,7 +23,7 @@ if __name__ == "__main__":
     parser.add_argument('clangd_path', type=str, default="c:\\Program Files (x86)\\Microsoft Visual Studio\\2019\\Enterprise\\VC\\Tools\\Llvm\\bin\\clangd",
                     help='the clangd path', nargs="?")
     args = parser.parse_args()
-    p = subprocess.Popen([args.clangd_path], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    p = subprocess.Popen([args.clangd_path, "--compile-commands-dir=C:\\Dev\\ana\\src\\out\\debug_x64"], stdin=subprocess.PIPE, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     read_pipe = ReadPipe(p.stderr)
     read_pipe.start()
     json_rpc_endpoint = pylspclient.JsonRpcEndpoint(p.stdin, p.stdout)
@@ -143,12 +143,12 @@ if __name__ == "__main__":
         25,
         26]}},'workspaceEdit': {'documentChanges': True},
     'workspaceFolders': True}}
-    root_uri = 'file:///C:/Dev/azure-devops/msradt/JessicasRoom/CMakeProject/CMakeProject'
+    root_uri = 'file:///C:/Dev/ana/src'
     workspace_folders = [{'name': 'python-lsp', 'uri': root_uri}]
     print(lsp_client.initialize(p.pid, None, root_uri, None, capabilities, "off", workspace_folders))
     print(lsp_client.initialized())
 
-    file_path = "C:/Dev/azure-devops/msradt/JessicasRoom/CMakeProject/CMakeProject/CMakeProject.cpp"
+    file_path = "C:/Dev/ana/src/chrome/browser/ui/views/tabs/tab_drag_controller_interactive_uitest.cc"
     uri = "file://" + file_path
     text = open(file_path, "r").read()
     languageId = pylspclient.lsp_structs.LANGUAGE_IDENTIFIER.CPP
@@ -162,7 +162,7 @@ if __name__ == "__main__":
         # documentSymbol is supported from version 8.
         print("Failed to document symbols")
 
-    result = lsp_client.definition(pylspclient.lsp_structs.TextDocumentIdentifier(uri), pylspclient.lsp_structs.Position(16, 13))
+    result = lsp_client.definition(pylspclient.lsp_structs.TextDocumentIdentifier(uri), pylspclient.lsp_structs.Position(4661, 17))
     #lsp_client.signatureHelp(pylspclient.lsp_structs.TextDocumentIdentifier(uri), pylspclient.lsp_structs.Position(14, 4))
     #lsp_client.definition(pylspclient.lsp_structs.TextDocumentIdentifier(uri), pylspclient.lsp_structs.Position(14, 4))
     #lsp_client.completion(pylspclient.lsp_structs.TextDocumentIdentifier(uri), pylspclient.lsp_structs.Position(14, 4), pylspclient.lsp_structs.CompletionContext(pylspclient.lsp_structs.CompletionTriggerKind.Invoked))
